@@ -7,13 +7,39 @@ import java.util.regex.Pattern;
 
 public class FileNameUtils {
     public static String removeBrackets(String str) {
-        str = setSpace(str);
-        str = deleteFirstAndLastSpaces(str);
-        str = removeBracketsFromTheDigits(str);
-        str = removeBracketsWithLetters(str);
-        str = replaceDash(str);
+        str = replaceConsts(str);
         return str;
     }
+
+    private static String replaceConsts(String str) {
+        return str
+                .replaceAll("\\(Фран\\)", "")
+                .replaceAll("\\(Fx\\)", "")
+                .replaceAll("\\(Gs Remix\\)", "")
+                .replaceAll("\\(Remix Gs\\)", "")
+                .replaceAll("\\(Gs 2 Вар\\)", "")
+                .replaceAll("\\(Gm2\\)", "")
+                .replaceAll("\\(Es\\)", "")
+                .replaceAll("\\(Sxg\\)", "")
+                .replaceAll("\\(2 Вар\\)", "(2)")
+                .replaceAll("\\(Вар 2\\)", "(2)")
+                .replaceAll("\\[Kd]", "")
+                .replaceAll("\\(Xg 2 Вар\\)", "(2)")
+                .replaceAll("\\(2 Вар Xg\\)", "(2)")
+                .replaceAll("К - Ф", "к.ф.")
+                .replaceAll("\\(3 Вар\\)", "(3)")
+                .replaceAll("\\(Вариант 2\\)", "(2)")
+                .replaceAll("\\(2 Вер\\)", "")
+                .replaceAll("\\(Gs\\)", "")
+                .replaceAll("\\(Gm\\)", "(2)")
+                .replaceAll("\\(Gm2\\)", "")
+                .replaceAll("\\(Xg\\)", "")
+                .replaceAll("\\s*Xg\\s*", "2")
+                //.replaceAll("\\s\\.kar", " (2).kar")
+                .trim();
+
+    }
+
 
     private static String setSpace(String str) {
         int i = str.indexOf('(');
@@ -44,7 +70,7 @@ public class FileNameUtils {
         if (firstOccurrence == -1 && lastOccurrence == -1) {
             return str;
         }
-        if(firstOccurrence == lastOccurrence) {
+        if (firstOccurrence == lastOccurrence) {
             return str.replaceAll("-", "")
                     .replaceAll("  +", "")
                     .trim();
@@ -59,10 +85,10 @@ public class FileNameUtils {
         Pattern pattern = Pattern.compile("[(\\[{](.*?)[)\\]}]");
         Matcher matcher = pattern.matcher(str);
         List<String> lst = new ArrayList<>();
-        while (matcher.find()){
+        while (matcher.find()) {
             lst.add(matcher.group(1));
         }
-        if(!lst.isEmpty()){
+        if (!lst.isEmpty()) {
             return lst.get(0);
         } else return "";
     }

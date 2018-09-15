@@ -1,6 +1,5 @@
 package fileName;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +15,7 @@ import java.util.stream.Stream;
 public class FileName {
     public static void main(String[] arg) {
         List<String> allSubstringsWithBrackets = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get("/Users/danilashamin/Library/Group Containers/6N38VWS5BX.ru.keepcoder.Telegram/account-15095284205556603934/postbox/media/all-songs 2"))) {
+        try (Stream<Path> paths = Files.walk(Paths.get("/Users/danilashamin/Downloads/song-bank"))) {
             paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().endsWith(".kar"))
@@ -26,7 +25,7 @@ public class FileName {
                             allSubstringsWithBrackets.add(name);
                         }
                         //System.out.println("Name before renamed: " + path.toFile().getName());
-                        //renameFile(path.toFile(), FileNameUtils.removeBrackets(path.toFile().getName()));
+                        //newName(path, FileNameUtils.removeBrackets(path.toFile().getName()));
                     });
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,21 +51,18 @@ public class FileName {
         Comparator<String> comparator = new ValueComparator(map);
         //TreeMap is a map sorted by its keys.
         //The comparator is used to sort the TreeMap by keys.
-        TreeMap<String, Integer> result = new TreeMap<String, Integer>(comparator);
+        TreeMap<String, Integer> result = new TreeMap<>(comparator);
         result.putAll(map);
         return result;
     }
-    public static void renameFile(File toBeRenamed, String new_name) {
-        //need to be in the same path
-        File fileWithNewName = new File(toBeRenamed, new_name);
 
-        String newFile = fileWithNewName.getName();
-        // Rename file (or directory)
-        boolean success = toBeRenamed.renameTo(fileWithNewName);
-        if (!success) {
-            System.out.println("Succesfully renamed, new name: " + toBeRenamed.getName());
-        } else {
-            System.out.println("Can't rename file to " + new_name);
+    static void newName(Path oldName, String newNameString) {
+        try {
+            Files.move(oldName, oldName.resolveSibling(newNameString));
+            System.out.println("Succesfully renamed, new name: " + oldName.toFile().getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Can't rename file to " + newNameString);
         }
         System.out.println("\n\n");
     }
